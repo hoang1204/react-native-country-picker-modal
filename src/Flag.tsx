@@ -77,14 +77,6 @@ const EmojiFlag = memo(({ countryCode, flagSize }: FlagType) => {
   )
 })
 
-interface FlagType {
-  // @ts-ignore
-  countryCode: string;
-  withEmoji?: boolean;
-  withFlagButton?: boolean;
-  flagSize: number;
-}
-
 export const Flag: React.FC<FlagType> = ({
                                             countryCode,
                                             withEmoji = true,
@@ -101,7 +93,3 @@ export const Flag: React.FC<FlagType> = ({
     </View>
   ) : null
 
-Flag.defaultProps = {
-  withEmoji: true,
-  withFlagButton: true,
-}

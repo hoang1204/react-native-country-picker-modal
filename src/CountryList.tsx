@@ -89,16 +89,15 @@ interface CountryItemProps {
   withCurrency?: boolean
   onSelect(country: Country): void
 }
-const CountryItem = (props: CountryItemProps) => {
+const CountryItem = ({
+                       country,
+                       onSelect,
+                       withFlag = true,
+                       withEmoji,
+                       withCallingCode = false,
+                       withCurrency,
+                     }: CountryItemProps) => {
   const { activeOpacity, itemHeight, flagSize } = useTheme()
-  const {
-    country,
-    onSelect,
-    withFlag,
-    withEmoji,
-    withCallingCode,
-    withCurrency,
-  } = props
   const extraContent: string[] = []
   if (
     withCallingCode &&
@@ -136,17 +135,14 @@ const CountryItem = (props: CountryItemProps) => {
     </TouchableOpacity>
   )
 }
-CountryItem.defaultProps = {
-  withFlag: true,
-  withCallingCode: false,
-}
+
 const MemoCountryItem = memo<CountryItemProps>(CountryItem)
 
 const renderItem =
   (props: Omit<CountryItemProps, 'country'>) =>
-  ({ item: country }: ListRenderItemInfo<Country>) => (
-    <MemoCountryItem {...{ country, ...props }} />
-  )
+    ({ item: country }: ListRenderItemInfo<Country>) => (
+      <MemoCountryItem {...{ country, ...props }} />
+    )
 
 interface CountryListProps {
   data: Country[]
@@ -170,20 +166,18 @@ const ItemSeparatorComponent = () => {
 
 const { height } = Dimensions.get('window')
 
-export const CountryList = (props: CountryListProps) => {
-  const {
-    data,
-    withAlphaFilter,
-    withEmoji,
-    withFlag,
-    withCallingCode,
-    withCurrency,
-    onSelect,
-    filter,
-    flatListProps,
-    filterFocus,
-  } = props
-
+export const CountryList = ({
+                              data,
+                              filterFocus,
+                              withAlphaFilter,
+                              withEmoji,
+                              withFlag = true,
+                              withCallingCode = false,
+                              withCurrency,
+                              onSelect,
+                              filter,
+                              flatListProps,
+                            }: CountryListProps) => {
   const flatListRef = useRef<FlatList<Country>>(null)
   const [letter, setLetter] = useState<string>('')
   const { itemHeight, backgroundColor } = useTheme()
@@ -255,8 +249,4 @@ export const CountryList = (props: CountryListProps) => {
       )}
     </View>
   )
-}
-
-CountryList.defaultProps = {
-  filterFocus: undefined,
 }

@@ -11,20 +11,24 @@ interface Props {
   children: React.ReactNode
 }
 
-export const AnimatedModal = ({ children, visible }: Props) => {
-  const translateY = new Animated.Value(height)
+export const AnimatedModal = ({ children, visible = false }: Props) => {
+  const translateY = React.useRef(new Animated.Value(height)).current
 
-  const showModal = Animated.timing(translateY, {
-    toValue: 0,
-    duration,
-    useNativeDriver,
-  }).start
+  const showModal = () => {
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration,
+      useNativeDriver,
+    }).start()
+  }
 
-  const hideModal = Animated.timing(translateY, {
-    toValue: height,
-    duration,
-    useNativeDriver,
-  }).start
+  const hideModal = () => {
+    Animated.timing(translateY, {
+      toValue: height,
+      duration,
+      useNativeDriver,
+    }).start()
+  }
 
   React.useEffect(() => {
     if (visible) {
@@ -45,8 +49,4 @@ export const AnimatedModal = ({ children, visible }: Props) => {
       {children}
     </Animated.View>
   )
-}
-
-AnimatedModal.defaultProps = {
-  visible: false,
 }
