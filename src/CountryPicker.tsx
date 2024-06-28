@@ -22,16 +22,12 @@ interface State {
   filterFocus?: boolean
 }
 
-interface RenderFlagButtonProps
-  extends React.ComponentProps<typeof FlagButton> {
+interface RenderFlagButtonProps extends React.ComponentProps<typeof FlagButton> {
   renderFlagButton?(props: React.ComponentProps<typeof FlagButton>): ReactNode
 }
 
-interface RenderCountryFilterProps
-  extends React.ComponentProps<typeof CountryFilter> {
-  renderCountryFilter?(
-    props: React.ComponentProps<typeof CountryFilter>,
-  ): ReactNode
+interface RenderCountryFilterProps extends React.ComponentProps<typeof CountryFilter> {
+  renderCountryFilter?(props: React.ComponentProps<typeof CountryFilter>): ReactNode
 }
 
 const renderFlagButton = (props: RenderFlagButtonProps): ReactNode =>
@@ -79,52 +75,50 @@ interface CountryPickerProps {
   closeButtonStyle?: StyleProp<ViewStyle>
   closeButtonImageStyle?: StyleProp<ImageStyle>
   renderFlagButton?(props: React.ComponentProps<typeof FlagButton>): ReactNode
-  renderCountryFilter?(
-    props: React.ComponentProps<typeof CountryFilter>,
-  ): ReactNode
+  renderCountryFilter?(props: React.ComponentProps<typeof CountryFilter>): ReactNode
   onSelect(country: Country): void
   onOpen?(): void
   onClose?(): void
 }
 
-export const CountryPicker = (props: CountryPickerProps) => {
-  const {
-    allowFontScaling,
-    countryCode,
-    region,
-    subregion,
-    countryCodes,
-    renderFlagButton: renderButton,
-    renderCountryFilter,
-    filterProps,
-    modalProps,
-    flatListProps,
-    onSelect,
-    withEmoji,
-    withFilter,
-    withCloseButton,
-    withCountryNameButton,
-    withCallingCodeButton,
-    withCurrencyButton,
-    containerButtonStyle,
-    withAlphaFilter,
-    withCallingCode,
-    withCurrency,
-    withFlag,
-    withModal,
-    disableNativeModal,
-    withFlagButton,
-    onClose: handleClose,
-    onOpen: handleOpen,
-    closeButtonImage,
-    closeButtonStyle,
-    closeButtonImageStyle,
-    excludeCountries,
-    placeholder,
-    preferredCountries,
-  } = props
+export const CountryPicker: React.FC<CountryPickerProps> = ({
+                                                              allowFontScaling = true,
+                                                              countryCode,
+                                                              region,
+                                                              subregion,
+                                                              countryCodes,
+                                                              renderFlagButton: renderButton,
+                                                              renderCountryFilter,
+                                                              filterProps,
+                                                              modalProps,
+                                                              flatListProps,
+                                                              onSelect,
+                                                              withEmoji = true,
+                                                              withFilter,
+                                                              withCloseButton,
+                                                              withCountryNameButton,
+                                                              withCallingCodeButton,
+                                                              withCurrencyButton,
+                                                              containerButtonStyle,
+                                                              withAlphaFilter = false,
+                                                              withCallingCode = false,
+                                                              withCurrency,
+                                                              withFlag,
+                                                              withModal = true,
+                                                              disableNativeModal,
+                                                              withFlagButton,
+                                                              onClose: handleClose,
+                                                              onOpen: handleOpen,
+                                                              closeButtonImage,
+                                                              closeButtonStyle,
+                                                              closeButtonImageStyle,
+                                                              excludeCountries,
+                                                              placeholder = 'Select Country',
+                                                              preferredCountries,
+                                                              visible: initialVisible = false,
+                                                            }) => {
   const [state, setState] = useState<State>({
-    visible: props.visible || false,
+    visible: initialVisible,
     countries: [],
     filter: '',
     filterFocus: false,
@@ -133,33 +127,32 @@ export const CountryPicker = (props: CountryPickerProps) => {
   const { visible, filter, countries, filterFocus } = state
 
   useEffect(() => {
-    if (state.visible !== props.visible) {
-      setState({ ...state, visible: props.visible || false })
+    if (state.visible !== initialVisible) {
+      setState((prevState) => ({ ...prevState, visible: initialVisible }))
     }
-  }, [props.visible])
+  }, [initialVisible])
 
   const onOpen = () => {
-    setState({ ...state, visible: true })
+    setState((prevState) => ({ ...prevState, visible: true }))
     if (handleOpen) {
       handleOpen()
     }
   }
   const onClose = () => {
-    setState({ ...state, filter: '', visible: false })
+    setState((prevState) => ({ ...prevState, filter: '', visible: false }))
     if (handleClose) {
       handleClose()
     }
   }
 
-  const setFilter = (filter: string) => setState({ ...state, filter })
-  const setCountries = (countries: Country[]) =>
-    setState({ ...state, countries })
+  const setFilter = (filter: string) => setState((prevState) => ({ ...prevState, filter }))
+  const setCountries = (countries: Country[]) => setState((prevState) => ({ ...prevState, countries }))
   const onSelectClose = (country: Country) => {
     onSelect(country)
     onClose()
   }
-  const onFocus = () => setState({ ...state, filterFocus: true })
-  const onBlur = () => setState({ ...state, filterFocus: false })
+  const onFocus = () => setState((prevState) => ({ ...prevState, filterFocus: true }))
+  const onBlur = () => setState((prevState) => ({ ...prevState, filterFocus: false }))
   const flagProp = {
     allowFontScaling,
     countryCode,
@@ -171,7 +164,7 @@ export const CountryPicker = (props: CountryPickerProps) => {
     renderFlagButton: renderButton,
     onOpen,
     containerButtonStyle,
-    placeholder: placeholder || 'Select Country',
+    placeholder,
   }
 
   useEffect(() => {
@@ -186,7 +179,9 @@ export const CountryPicker = (props: CountryPickerProps) => {
       preferredCountries,
       withAlphaFilter,
     )
-      .then((countries) => (cancel ? null : setCountries(countries)))
+      .then((countries) => {
+        if (!cancel) setCountries(countries)
+      })
       .catch(console.warn)
 
     return () => {
@@ -242,12 +237,4 @@ export const CountryPicker = (props: CountryPickerProps) => {
       </CountryModal>
     </>
   )
-}
-
-CountryPicker.defaultProps = {
-  withModal: true,
-  withAlphaFilter: false,
-  withCallingCode: false,
-  placeholder: 'Select Country',
-  allowFontScaling: true,
 }

@@ -11,16 +11,20 @@ const styles = StyleSheet.create({
   },
 })
 
-export const CountryModal = ({
-  children,
-  withModal,
-  disableNativeModal,
-  ...props
-}: ModalProps & {
+interface CountryModalProps extends ModalProps {
   children: React.ReactNode
   withModal?: boolean
   disableNativeModal?: boolean
-}) => {
+}
+
+export const CountryModal: React.FC<CountryModalProps> = ({
+                                                            children,
+                                                            withModal = true,
+                                                            disableNativeModal = false,
+                                                            animationType = 'slide',
+                                                            animated = true,
+                                                            ...props
+                                                          }) => {
   const { backgroundColor } = useTheme()
   const { teleport } = React.useContext(CountryModalContext)
   const content = (
@@ -43,11 +47,4 @@ export const CountryModal = ({
     return <Modal {...props}>{content}</Modal>
   }
   return content
-}
-
-CountryModal.defaultProps = {
-  animationType: 'slide',
-  animated: true,
-  withModal: true,
-  disableNativeModal: false,
 }

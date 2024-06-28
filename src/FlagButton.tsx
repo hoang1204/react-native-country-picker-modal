@@ -122,7 +122,7 @@ export interface FlagButtonProps {
   onOpen?(): void
 }
 
-export const FlagButton = ({
+export const FlagButton:React.FC<FlagButtonProps> = ({
   allowFontScaling,
   withEmoji,
   withCountryNameButton,
@@ -133,7 +133,7 @@ export const FlagButton = ({
   containerButtonStyle,
   onOpen,
   placeholder,
-}: FlagButtonProps) => {
+}) => {
   const { flagSizeButton: flagSize } = useTheme()
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onOpen}>
@@ -160,12 +160,4 @@ export const FlagButton = ({
       </View>
     </TouchableOpacity>
   )
-}
-
-FlagButton.defaultProps = {
-  withEmoji: true,
-  withCountryNameButton: false,
-  withCallingCodeButton: false,
-  withCurrencyButton: false,
-  withFlagButton: true,
 }
